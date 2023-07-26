@@ -15,6 +15,9 @@ def get_category(file_extension):
     return "Others"
 
 def organize_files(source_folder, destination_folder, move_files=True, sort_by_category=True):
+    total_files_moved = 0
+    total_errors = 0
+
     if not os.path.exists(destination_folder):
         os.makedirs(destination_folder)
 
@@ -36,12 +39,25 @@ def organize_files(source_folder, destination_folder, move_files=True, sort_by_c
                 try:
                     if move_files:
                         shutil.move(file_path, os.path.join(destination_path, filename))
+                        total_files_moved += 1
                         print(f"Moved '{filename}' to '{destination_path}'")
                     else:
                         shutil.copy2(file_path, os.path.join(destination_path, filename))
+                        total_files_moved += 1
                         print(f"Copied '{filename}' to '{destination_path}'")
                 except shutil.Error:
+                    total_errors += 1
                     print(f"Error processing '{filename}'")
+
+    summary = f"Total {total_files_moved} files organized with {total_errors} errors."
+
+    save_log = input("Do you want to save the summary in a .log file? (yes/no): ").lower()
+    if save_log == "yes":
+        log_file = "organize_files_summary.log"
+        with open(log_file, "w") as f:
+            f.write(summary)
+
+    print(summary)
 
 if __name__ == "__main__":
     print("Example Paths:")
