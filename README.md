@@ -44,6 +44,10 @@ python file_organizer.py
 
 10. Optionally, the script will ask if you want to save the summary in a `.log` file.
 
+## GUI Edition
+
+A graphical user interface (GUI) edition of FileOrganizerPy is available, allowing users to interact with the application through an easy-to-use interface. To use the GUI edition, run the `file_organizer_gui.py` script instead of the command-line version. The GUI version offers the same functionality as the command-line version but provides a more user-friendly experience.
+
 ## File Categories
 
 The script automatically categorizes files into the following categories based on their extensions:
@@ -59,7 +63,7 @@ If a file's extension does not match any of the above categories, it will be pla
 
 - Please make sure to replace the example paths with your desired paths.
 - Take a backup of your files before running the script, especially if you're using the move option. The script will move files from the source folder, and there is no undo option.
-- Always run the script in the folder where the `file_organizer.py` script is located.
+- Always run the script in the folder where the `file_organizer.py` or `file_organizer_gui.py` script is located.
 - Use the script responsibly and verify the results after organization.
 
 ## License
