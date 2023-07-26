@@ -22,10 +22,12 @@ def organize_files(source_folder, destination_folder):
                     print(f"Error moving '{filename}' to '{destination_path}'")
 
 if __name__ == "__main__":
-    print("Example Path:")
-    print("Source folder: /path/to/source/folder")
-    print("Destination folder: /path/to/destination/folder")
-    print("Note: Please replace '/path/to/source/folder' and '/path/to/destination/folder' with your desired paths.")
+    print("Example Paths:")
+    print("Windows Source folder: C:\\Users\\Username\\Documents\\source_folder")
+    print("Windows Destination folder: D:\\Backup\\destination_folder")
+    print("Linux Source folder: /home/username/source_folder")
+    print("Linux Destination folder: /mnt/backup/destination_folder")
+    print("Note: Please replace the example paths with your desired paths.")
 
     use_current_directory = input("Do you want to use the current directory as the source folder? (yes/no): ").lower()
     if use_current_directory == "yes":
