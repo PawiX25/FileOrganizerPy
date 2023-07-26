@@ -22,6 +22,11 @@ def organize_files(source_folder, destination_folder):
                     print(f"Error moving '{filename}' to '{destination_path}'")
 
 if __name__ == "__main__":
+    print("Example Path:")
+    print("Source folder: /path/to/source/folder")
+    print("Destination folder: /path/to/destination/folder")
+    print("Note: Please replace '/path/to/source/folder' and '/path/to/destination/folder' with your desired paths.")
+
     source_folder = input("Enter the source folder path: ")
     destination_folder = input("Enter the destination folder path: ")
 
