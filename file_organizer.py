@@ -27,7 +27,12 @@ if __name__ == "__main__":
     print("Destination folder: /path/to/destination/folder")
     print("Note: Please replace '/path/to/source/folder' and '/path/to/destination/folder' with your desired paths.")
 
-    source_folder = input("Enter the source folder path: ")
+    use_current_directory = input("Do you want to use the current directory as the source folder? (yes/no): ").lower()
+    if use_current_directory == "yes":
+        source_folder = os.getcwd()  # Set the current working directory as the source folder
+    else:
+        source_folder = input("Enter the source folder path: ")
+
     destination_folder = input("Enter the destination folder path: ")
 
     organize_files(source_folder, destination_folder)
