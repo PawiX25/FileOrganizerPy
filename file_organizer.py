@@ -1,7 +1,20 @@
 import os
 import shutil
 
-def organize_files(source_folder, destination_folder, move_files=True):
+def get_category(file_extension):
+    categories = {
+        "Documents": ["txt", "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx"],
+        "Images": ["jpg", "jpeg", "png", "gif", "bmp"],
+        "Videos": ["mp4", "avi", "mkv", "mov", "wmv"],
+        "Music": ["mp3", "ogg", "wav", "flac"],
+    }
+
+    for category, extensions in categories.items():
+        if file_extension.lower() in extensions:
+            return category
+    return "Others"
+
+def organize_files(source_folder, destination_folder, move_files=True, sort_by_category=True):
     if not os.path.exists(destination_folder):
         os.makedirs(destination_folder)
 
@@ -10,7 +23,12 @@ def organize_files(source_folder, destination_folder, move_files=True):
             file_path = os.path.join(root, filename)
             if os.path.isfile(file_path):
                 file_extension = os.path.splitext(filename)[1][1:]  # Get the file extension without the dot
-                destination_path = os.path.join(destination_folder, file_extension)
+
+                if sort_by_category:
+                    category = get_category(file_extension)
+                    destination_path = os.path.join(destination_folder, category)
+                else:
+                    destination_path = os.path.join(destination_folder, file_extension)
 
                 if not os.path.exists(destination_path):
                     os.makedirs(destination_path)
@@ -48,4 +66,6 @@ if __name__ == "__main__":
     else:
         move_files = True
 
-    organize_files(source_folder, destination_folder, move_files)
+    sort_by_category = input("Do you want to sort by file categories? (yes/no): ").lower()
+
+    organize_files(source_folder, destination_folder, move_files, sort_by_category == "yes")
