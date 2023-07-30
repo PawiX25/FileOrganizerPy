@@ -17,10 +17,12 @@ def get_category(file_extension):
 def organize_files(source_folder, destination_folder, move_files=True, sort_by_category=True):
     total_files_moved = 0
     total_errors = 0
+    total_duplicates = 0
 
     if not os.path.exists(destination_folder):
         os.makedirs(destination_folder)
 
+    existing_files = set()  # To keep track of files already processed
     for root, _, files in os.walk(source_folder):
         for filename in files:
             file_path = os.path.join(root, filename)
@@ -37,25 +39,63 @@ def organize_files(source_folder, destination_folder, move_files=True, sort_by_c
                     os.makedirs(destination_path)
 
                 try:
+                    destination_file_path = os.path.join(destination_path, filename)
+
+                    # Check if the file with the same size already exists in the destination folder
+                    if os.path.exists(destination_file_path):
+                        source_file_size = os.path.getsize(file_path)
+                        dest_file_size = os.path.getsize(destination_file_path)
+
+                        if source_file_size == dest_file_size and destination_file_path not in existing_files:
+                            total_duplicates += 1
+                            print(f"Skipped (Same Size): '{filename}'")
+                            existing_files.add(destination_file_path)
+                            continue
+
                     if move_files:
-                        shutil.move(file_path, os.path.join(destination_path, filename))
+                        shutil.move(file_path, destination_file_path)
                         total_files_moved += 1
                         print(f"Moved '{filename}' to '{destination_path}'")
                     else:
-                        shutil.copy2(file_path, os.path.join(destination_path, filename))
+                        shutil.copy2(file_path, destination_file_path)
                         total_files_moved += 1
                         print(f"Copied '{filename}' to '{destination_path}'")
                 except shutil.Error:
                     total_errors += 1
                     print(f"Error processing '{filename}'")
 
-    summary = f"Total {total_files_moved} files organized with {total_errors} errors."
+    summary = f"Total {total_files_moved} files organized with {total_errors} errors. {total_duplicates} duplicates skipped."
 
-    save_log = input("Do you want to save the summary in a .log file? (yes/no): ").lower()
+    save_log = input("Do you want to save the summary and log in separate .log files? (yes/no): ").lower()
     if save_log == "yes":
-        log_file = "organize_files_summary.log"
-        with open(log_file, "w") as f:
+        log_file = "organize_files_log.txt"
+        with open(log_file, "w") as log:
+            log.write("File Organization Log\n")
+            log.write("=====================\n")
+            for root, _, files in os.walk(source_folder):
+                for filename in files:
+                    file_path = os.path.join(root, filename)
+                    if os.path.isfile(file_path):
+                        file_extension = os.path.splitext(filename)[1][1:]  # Get the file extension without the dot
+
+                        if sort_by_category:
+                            category = get_category(file_extension)
+                            destination_path = os.path.join(destination_folder, category)
+                        else:
+                            destination_path = os.path.join(destination_folder, file_extension)
+
+                        if not os.path.exists(destination_path):
+                            os.makedirs(destination_path)
+
+                        try:
+                            destination_file_path = os.path.join(destination_path, filename)
+                            log.write(f"Moved '{filename}' to '{destination_path}'\n")
+                        except shutil.Error:
+                            log.write(f"Error processing '{filename}'\n")
+
+        with open("organize_files_summary.log", "w") as f:
             f.write(summary)
+        shutil.move(log_file, "organize_files_log.log")
 
     print(summary)
 
