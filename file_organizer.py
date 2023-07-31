@@ -14,7 +14,7 @@ def get_category(file_extension):
             return category
     return "Others"
 
-def organize_files(source_folder, destination_folder, move_files=True, sort_by_category=True):
+def organize_files(source_folder, destination_folder, move_files=True, sort_by_category=True, sort_subfolders=True):
     total_files_moved = 0
     total_errors = 0
     total_duplicates = 0
@@ -24,6 +24,8 @@ def organize_files(source_folder, destination_folder, move_files=True, sort_by_c
 
     existing_files = set()  # To keep track of files already processed
     for root, _, files in os.walk(source_folder):
+        if not sort_subfolders and root != source_folder:
+            continue
         for filename in files:
             file_path = os.path.join(root, filename)
             if os.path.isfile(file_path):
@@ -124,4 +126,6 @@ if __name__ == "__main__":
 
     sort_by_category = input("Do you want to sort by file categories? (yes/no): ").lower()
 
-    organize_files(source_folder, destination_folder, move_files, sort_by_category == "yes")
+    sort_subfolders = input("Do you want to sort files in subfolders? (yes/no): ").lower() == "yes"
+
+    organize_files(source_folder, destination_folder, move_files, sort_by_category == "yes", sort_subfolders)
