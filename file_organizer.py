@@ -14,6 +14,20 @@ def get_category(file_extension):
             return category
     return "Others"
 
+def get_destination_path(filename, destination_folder, sort_by_category):
+    file_extension = os.path.splitext(filename)[1][1:]  # Get the file extension without the dot
+
+    if sort_by_category:
+        category = get_category(file_extension)
+        destination_path = os.path.join(destination_folder, category)
+    else:
+        destination_path = os.path.join(destination_folder, file_extension)
+
+    if not os.path.exists(destination_path):
+        os.makedirs(destination_path)
+
+    return destination_path
+
 def organize_files(source_folder, destination_folder, move_files=True, sort_by_category=True, sort_subfolders=True):
     total_files_moved = 0
     total_errors = 0
@@ -29,16 +43,7 @@ def organize_files(source_folder, destination_folder, move_files=True, sort_by_c
         for filename in files:
             file_path = os.path.join(root, filename)
             if os.path.isfile(file_path):
-                file_extension = os.path.splitext(filename)[1][1:]  # Get the file extension without the dot
-
-                if sort_by_category:
-                    category = get_category(file_extension)
-                    destination_path = os.path.join(destination_folder, category)
-                else:
-                    destination_path = os.path.join(destination_folder, file_extension)
-
-                if not os.path.exists(destination_path):
-                    os.makedirs(destination_path)
+                destination_path = get_destination_path(filename, destination_folder, sort_by_category)
 
                 try:
                     destination_file_path = os.path.join(destination_path, filename)
@@ -78,16 +83,7 @@ def organize_files(source_folder, destination_folder, move_files=True, sort_by_c
                 for filename in files:
                     file_path = os.path.join(root, filename)
                     if os.path.isfile(file_path):
-                        file_extension = os.path.splitext(filename)[1][1:]  # Get the file extension without the dot
-
-                        if sort_by_category:
-                            category = get_category(file_extension)
-                            destination_path = os.path.join(destination_folder, category)
-                        else:
-                            destination_path = os.path.join(destination_folder, file_extension)
-
-                        if not os.path.exists(destination_path):
-                            os.makedirs(destination_path)
+                        destination_path = get_destination_path(filename, destination_folder, sort_by_category)
 
                         try:
                             destination_file_path = os.path.join(destination_path, filename)
