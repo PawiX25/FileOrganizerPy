@@ -23,8 +23,7 @@ def get_destination_path(filename, destination_folder, sort_by_category):
     else:
         destination_path = os.path.join(destination_folder, file_extension)
 
-    if not os.path.exists(destination_path):
-        os.makedirs(destination_path)
+    os.makedirs(destination_path, exist_ok=True)  # Create the directory if it doesn't exist
 
     return destination_path
 
@@ -33,8 +32,7 @@ def organize_files(source_folder, destination_folder, move_files=True, sort_by_c
     total_errors = 0
     total_duplicates = 0
 
-    if not os.path.exists(destination_folder):
-        os.makedirs(destination_folder)
+    os.makedirs(destination_folder, exist_ok=True)  # Create the directory if it doesn't exist
 
     existing_files = set()  # To keep track of files already processed
     for root, _, files in os.walk(source_folder):
