@@ -28,6 +28,8 @@ def get_destination_path(filename, destination_folder, sort_by_category):
     return destination_path
 
 def organize_files(source_folder, destination_folder, move_files=True, sort_by_category=True, sort_subfolders=True):
+    logs = []  # Here we create an empty list to store our logs
+
     total_files_moved = 0
     total_errors = 0
     total_duplicates = 0
@@ -53,41 +55,33 @@ def organize_files(source_folder, destination_folder, move_files=True, sort_by_c
 
                         if source_file_size == dest_file_size and destination_file_path not in existing_files:
                             total_duplicates += 1
-                            print(f"Skipped (Same Size): '{filename}'")
+                            logs.append(f"Skipped (Same Size): '{filename}'")
                             existing_files.add(destination_file_path)
                             continue
 
                     if move_files:
                         shutil.move(file_path, destination_file_path)
                         total_files_moved += 1
-                        print(f"Moved '{filename}' to '{destination_path}'")
+                        logs.append(f"Moved '{filename}' to '{destination_path}'")
                     else:
                         shutil.copy2(file_path, destination_file_path)
                         total_files_moved += 1
-                        print(f"Copied '{filename}' to '{destination_path}'")
+                        logs.append(f"Copied '{filename}' to '{destination_path}'")
                 except shutil.Error:
                     total_errors += 1
-                    print(f"Error processing '{filename}'")
+                    logs.append(f"Error processing '{filename}'")
 
     summary = f"Total {total_files_moved} files organized with {total_errors} errors. {total_duplicates} duplicates skipped."
 
+    # When saving the log, we simply write the contents of our list to the file
     save_log = input("Do you want to save the summary and log in separate .log files? (yes/no): ").lower()
     if save_log == "yes":
         log_file = "organize_files_log.txt"
         with open(log_file, "w") as log:
             log.write("File Organization Log\n")
             log.write("=====================\n")
-            for root, _, files in os.walk(source_folder):
-                for filename in files:
-                    file_path = os.path.join(root, filename)
-                    if os.path.isfile(file_path):
-                        destination_path = get_destination_path(filename, destination_folder, sort_by_category)
-
-                        try:
-                            destination_file_path = os.path.join(destination_path, filename)
-                            log.write(f"Moved '{filename}' to '{destination_path}'\n")
-                        except shutil.Error:
-                            log.write(f"Error processing '{filename}'\n")
+            for log_entry in logs:
+                log.write(log_entry + "\n")
 
         with open("organize_files_summary.log", "w") as f:
             f.write(summary)
